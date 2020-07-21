@@ -8,6 +8,7 @@ const sass = require('gulp-sass');
 const sourcemaps = require('gulp-sourcemaps');
 const colors = require('colors');
 const gulpReplacePath = require('gulp-replace-path');
+const concat = require('gulp-concat');
 
 const gulpStylelint = require('gulp-stylelint');
 const gulpHtmllint = require('gulp-htmllint');
@@ -18,12 +19,17 @@ const htmlBlob = 'src/*.html';
 const imagesBlob = 'src/images/**';
 const fontsBlob = 'src/fonts/**';
 const stylesBlob = 'src/styles/**';
-const jsBlob = 'src/scripts/**';
+const jsBlob = [
+  'src/scripts/lib/pixi.js',
+  'src/scripts/main.js',
+];
 
 const { series, parallel } = gulp;
 
 gulp.task('cleanDist', function() {
-  return gulp.src(distDirectory, { read: false, allowEmpty: true })
+  return gulp.src(distDirectory, {
+    read: false, allowEmpty: true,
+  })
     .pipe(clean());
 });
 
@@ -34,6 +40,8 @@ gulp.task('processHtml', function() {
     }, function(filepath, issues) {
       issues.forEach(function(issue) {
         const { line, column, code, msg } = issue;
+
+        // eslint-disable-next-line no-console
         console.log(
           ` ❌   ${colors.red('htmllint error')}
           📁  file: ${filepath}
@@ -59,7 +67,9 @@ gulp.task('lintCss', function() {
     .pipe(gulpStylelint({
       failAfterError: false,
       reporters: [
-        { formatter: 'string', console: true },
+        {
+          formatter: 'string', console: true,
+        },
       ],
       debug: true,
     }));
@@ -70,7 +80,9 @@ gulp.task('processStyles', series('lintCss', function() {
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(gulpReplacePath(/(?:\.\.\/){2,}images/g, '../images'))
-    .pipe(autoprefixer())
+    .pipe(autoprefixer({
+      browsers: ['last 2 versions'],
+    }))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(`${distDirectory}/styles`))
     .pipe(browserSync.reload({ stream: true }));
@@ -79,6 +91,7 @@ gulp.task('processStyles', series('lintCss', function() {
 gulp.task('processJs', function() {
   return gulp.src(jsBlob)
     .pipe(gulpEslint())
+    .pipe(concat('main.js'))
     .pipe(gulpEslint.format())
     .pipe(gulp.dest(`${distDirectory}/scripts/`));
 });
@@ -96,7 +109,6 @@ gulp.task('build', series(
 
 gulp.task('serve', function() {
   browserSync.init({
-    notify: false,
     server: {
       baseDir: distDirectory,
     },

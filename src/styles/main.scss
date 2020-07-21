@@ -1,7 +1,115 @@
-@import "utils";
-@import "fonts";
-@import "typography";
-
 body {
-  background: $c-gray;
+  margin: 0;
+}
+
+.app {
+  font-family: Calibri, sans-serif;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+
+  &__top {
+    display: flex;
+  }
+
+  &__number {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid lightgrey;
+    border-bottom: none;
+  }
+
+  &__area {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid lightgrey;
+    border-bottom: none;
+    border-left: none;
+  }
+
+  &__bottom {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__speed {
+    display: flex;
+    margin-right: 15px;
+    align-items: center;
+  }
+
+  &__gravity {
+    display: flex;
+    align-items: center;
+  }
+
+  &__bottom-text {
+    padding: 10px;
+    border: 1px solid lightgrey;
+  }
+
+  &__button {
+    cursor: pointer;
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #222;
+    background-color: inherit;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: darkblue;
+    }
+
+    &-decrease {
+      border-right-width: 1px;
+      border-radius: 5px 0 0 5px;
+
+      &:before {
+        width: 18px;
+        height: 2px;
+      }
+    }
+
+    &-increase {
+      border-radius: 0 5px 5px 0;
+      margin-right: 20px;
+      border-left-width: 1px;
+
+      &:before {
+        width: 18px;
+        height: 2px;
+      }
+
+      &:after {
+        width: 2px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid lightgrey;
 }
