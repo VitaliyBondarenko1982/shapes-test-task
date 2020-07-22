@@ -39981,6 +39981,156 @@
 })));
 //# sourceMappingURL=pixi.js.map
 
+/*!
+ * @pixi/graphics-extras - v5.2.4
+ * Compiled Thu, 14 May 2020 23:22:02 UTC
+ *
+ * @pixi/graphics-extras is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+this.PIXI = this.PIXI || {};
+(function (graphics) {
+  'use strict';
+
+  /**
+   * Draw a torus shape, like a donut. Can be used for something like a circle loader.
+   *
+   * _Note: Only available with **@pixi/graphics-extras**._
+   *
+   * @method PIXI.Graphics#drawTorus
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   * @param {number} innerRadius - Inner circle radius
+   * @param {number} outerRadius - Outer circle radius
+   * @param {number} sweep - How much of the circle to fill, in radius
+   * @return {PIXI.Graphics}
+   */
+  function drawTorus(x, y, innerRadius, outerRadius, startArc, endArc) {
+    if (startArc === void 0) { startArc = 0; }
+    if (endArc === void 0) { endArc = Math.PI * 2; }
+    if ((endArc - startArc) >= Math.PI * 2) {
+      return this
+        .drawCircle(x, y, outerRadius)
+        .beginHole()
+        .drawCircle(x, y, innerRadius)
+        .endHole();
+    }
+    return this
+      .arc(x, y, innerRadius, endArc, startArc, true)
+      .arc(x, y, outerRadius, startArc, endArc, false)
+      .closePath();
+  }
+
+  /**
+   * Draw Rectangle with chamfer corners.
+   *
+   * _Note: Only available with **@pixi/graphics-extras**._
+   *
+   * @method PIXI.Graphics#drawChamferRect
+   * @param {number} x - Upper left corner of rect
+   * @param {number} y - Upper right corner of rect
+   * @param {number} width - Width of rect
+   * @param {number} height - Height of rect
+   * @param {number} chamfer - accept negative or positive values
+   * @return {PIXI.Graphics} Returns self.
+   */
+  function drawChamferRect(x, y, width, height, chamfer) {
+    if (chamfer === 0) {
+      return this.drawRect(x, y, width, height);
+    }
+    var maxChamfer = Math.min(width, height) / 2;
+    var inset = Math.min(maxChamfer, Math.max(-maxChamfer, chamfer));
+    var right = x + width;
+    var bottom = y + height;
+    var dir = inset < 0 ? -inset : 0;
+    var size = Math.abs(inset);
+    return this
+      .moveTo(x, y + size)
+      .arcTo(x + dir, y + dir, x + size, y, size)
+      .lineTo(right - size, y)
+      .arcTo(right - dir, y + dir, right, y + size, size)
+      .lineTo(right, bottom - size)
+      .arcTo(right - dir, bottom - dir, x + width - size, bottom, size)
+      .lineTo(x + size, bottom)
+      .arcTo(x + dir, bottom - dir, x, bottom - size, size)
+      .closePath();
+  }
+
+  /**
+   * Draw Rectangle with fillet corners.
+   *
+   * _Note: Only available with **@pixi/graphics-extras**._
+   *
+   * @method PIXI.Graphics#drawFilletRect
+   * @param {number} x - Upper left corner of rect
+   * @param {number} y - Upper right corner of rect
+   * @param {number} width - Width of rect
+   * @param {number} height - Height of rect
+   * @param {number} fillet - non-zero real number, size of corner cutout
+   * @return {PIXI.Graphics} Returns self.
+   */
+  function drawFilletRect(x, y, width, height, fillet) {
+    if (fillet <= 0) {
+      return this.drawRect(x, y, width, height);
+    }
+    var inset = Math.min(fillet, Math.min(width, height) / 2);
+    var right = x + width;
+    var bottom = y + height;
+    var points = [
+      x + inset, y,
+      right - inset, y,
+      right, y + inset,
+      right, bottom - inset,
+      right - inset, bottom,
+      x + inset, bottom,
+      x, bottom - inset,
+      x, y + inset ];
+    // Remove overlapping points
+    for (var i = points.length - 1; i >= 2; i -= 2) {
+      if (points[i] === points[i - 2] && points[i - 1] === points[i - 3]) {
+        points.splice(i - 1, 2);
+      }
+    }
+    return this.drawPolygon(points);
+  }
+
+  /**
+   * Draw a regular polygon where all sides are the same length.
+   *
+   * _Note: Only available with **@pixi/graphics-extras**._
+   *
+   * @method PIXI.Graphics#drawRegularPolygon
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   * @param {number} radius - Polygon radius
+   * @param {number} sides - Minimum value is 3
+   * @param {number} rotation - Starting rotation values in radians..
+   * @return {PIXI.Graphics}
+   */
+  function drawRegularPolygon(x, y, radius, sides, rotation) {
+    if (rotation === void 0) { rotation = 0; }
+    sides = Math.max(sides | 0, 3);
+    var startAngle = (-1 * Math.PI / 2) + rotation;
+    var delta = (Math.PI * 2) / sides;
+    var polygon = [];
+    for (var i = 0; i < sides; i++) {
+      var angle = (i * delta) + startAngle;
+      polygon.push(x + (radius * Math.cos(angle)), y + (radius * Math.sin(angle)));
+    }
+    return this.drawPolygon(polygon);
+  }
+
+  // Assign extras to Graphics
+  Object.defineProperties(graphics.Graphics.prototype, {
+    drawTorus: { value: drawTorus },
+    drawChamferRect: { value: drawChamferRect },
+    drawFilletRect: { value: drawFilletRect },
+    drawRegularPolygon: { value: drawRegularPolygon },
+  });
+
+}(PIXI));
+//# sourceMappingURL=graphics-extras.js.map
+
 'use strict';
 
 const canvas = document.getElementById('mycanvas');
@@ -40017,6 +40167,7 @@ const shapesTypes = [
   'hexagon',
   'circle',
   'ellipse',
+  'shape',
 ];
 
 let renderShapes;
@@ -40038,7 +40189,7 @@ function createTriangle() {
     triangle.width, state.width - triangle.width
   );
   triangle.y = -triangle.height;
-  triangle.square = triangle.height * triangle.width / 2;
+  triangle.area = Math.round(triangle.height * triangle.width / 2);
   triangle.vy = state.gravityValue;
   triangle.type = 'triangle';
   triangle.interactive = true;
@@ -40059,7 +40210,7 @@ function createRectangle() {
     rectangle.width, state.width - rectangle.width
   );
   rectangle.y = -rectangle.height;
-  rectangle.square = rectangle.width * rectangle.height;
+  rectangle.area = rectangle.width * rectangle.height;
   rectangle.vy = state.gravityValue;
   rectangle.type = 'rectangle';
   rectangle.interactive = true;
@@ -40071,16 +40222,17 @@ function createRectangle() {
 function createPentagon() {
   const pentagon = new Graphics();
   const color = getRandomColor();
-
+  const radius = 30;
+  const numberOfSides = 5;
   pentagon.beginFill(color);
-  pentagon.drawPolygon(0, 0, 38, 0, 50, 37, 18, 59, -13, 36);
+  pentagon.drawRegularPolygon(0, 0, radius, numberOfSides);
   pentagon.endFill();
 
   pentagon.x = randomInt(
     pentagon.width, state.width - pentagon.width
   );
   pentagon.y = -pentagon.height;
-  pentagon.square = pentagon.height * pentagon.width / 2;
+  pentagon.area = Math.round((Math.pow(radius, 2) * numberOfSides  * Math.sin(360 / numberOfSides * Math.PI / 180)) / 2);
   pentagon.vy = state.gravityValue;
   pentagon.type = 'pentagon';
   pentagon.interactive = true;
@@ -40092,16 +40244,18 @@ function createPentagon() {
 function createHexagon() {
   const hexagon = new Graphics();
   const color = getRandomColor();
+  const radius = 30;
+  const numberOfSides = 6;
 
   hexagon.beginFill(color);
-  hexagon.drawPolygon(0, 0, 29, 0, 43, 25, 29, 50, 0, 50, -14, 25);
+  hexagon.drawRegularPolygon(0, 0, radius, numberOfSides);
   hexagon.endFill();
 
   hexagon.x = randomInt(
     hexagon.width, state.width - hexagon.width
   );
   hexagon.y = -hexagon.height;
-  hexagon.square = 2140;
+  hexagon.area = Math.round((Math.pow(radius, 2) * numberOfSides  * Math.sin(360 / numberOfSides * Math.PI / 180)) / 2);
   hexagon.vy = state.gravityValue;
   hexagon.type = 'pentagon';
   hexagon.interactive = true;
@@ -40122,7 +40276,7 @@ function createCircle() {
     circle.width / 2, state.width - circle.width / 2
   );
   circle.y = -circle.height / 2;
-  circle.square = Math.round(Math.PI * Math.pow(circle.width, 2) / 4);
+  circle.area = Math.round(Math.PI * Math.pow(circle.width, 2) / 4);
   circle.vy = state.gravityValue;
   circle.type = 'circle';
   circle.interactive = true;
@@ -40143,7 +40297,7 @@ function createEllipse() {
     ellipse.width / 2, state.width - ellipse.width / 2
   );
   ellipse.y = -ellipse.height / 2;
-  ellipse.square = Math.round(Math.PI * ellipse.width * ellipse.height / 4);
+  ellipse.area = Math.round(Math.PI * ellipse.width * ellipse.height / 4);
   ellipse.vy = state.gravityValue;
   ellipse.type = 'ellipse';
   ellipse.interactive = true;
@@ -40151,6 +40305,27 @@ function createEllipse() {
   shapes.push(ellipse);
   app.stage.addChild(ellipse);
 }
+
+function createShape() {
+  const shape = new Graphics();
+  const color = getRandomColor();
+  const chamfer = 20;
+  shape.beginFill(color);
+  shape.drawChamferRect(0, 0, 80, 60, -chamfer)
+  shape.endFill();
+
+  shape.x = randomInt(
+    shape.width, state.width - shape.width
+  );
+  shape.y = -shape.height;
+  shape.area = Math.round(shape.width * shape.height - (Math.PI * Math.pow(chamfer, 2)));
+  shape.vy = state.gravityValue;
+  shape.type = 'rectangle';
+  shape.interactive = true;
+  shape.buttonMode = true;
+  app.stage.addChild(shape);
+  shapes.push(shape);
+};
 
 function createShapes() {
   const type = shapesTypes[randomInt(0, shapesTypes.length - 1)];
@@ -40174,8 +40349,11 @@ function createShapes() {
     case 'ellipse':
       createEllipse();
       break;
+    case 'shape':
+      createShape();
+      break;
     default:
-      createEllipse();
+      createRectangle();
   }
 }
 
@@ -40194,13 +40372,13 @@ function getVisibleShapes() {
   return [...visibleNotRectangleShapes, ...visibleRectangleShapes];
 }
 
-function calculateSquareOfShapes() {
+function calculateAreaOfShapes() {
   const visibleShapes = getVisibleShapes();
 
-  const totalSquare = visibleShapes
-    .reduce((square, shape) => (square + shape.square), 0);
+  const totalArea = visibleShapes
+    .reduce((area, shape) => (area + shape.area), 0);
 
-  return totalSquare;
+  return totalArea;
 }
 
 function setup() {
@@ -40218,7 +40396,7 @@ app.ticker.add(() => {
     shape.y += shape.vy;
   }
   number.innerText = getVisibleShapes().length;
-  area.innerText = calculateSquareOfShapes();
+  area.innerText = calculateAreaOfShapes();
 });
 
 // events
