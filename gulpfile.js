@@ -21,6 +21,7 @@ const fontsBlob = 'src/fonts/**';
 const stylesBlob = 'src/styles/**';
 const jsBlob = [
   'src/scripts/lib/pixi.js',
+  'src/scripts/lib/graphics-extras.js',
   'src/scripts/main.js',
 ];
 

@@ -34,6 +34,7 @@ const shapesTypes = [
   'hexagon',
   'circle',
   'ellipse',
+  'shape',
 ];
 
 let renderShapes;
@@ -55,7 +56,7 @@ function createTriangle() {
     triangle.width, state.width - triangle.width
   );
   triangle.y = -triangle.height;
-  triangle.square = triangle.height * triangle.width / 2;
+  triangle.area = Math.round(triangle.height * triangle.width / 2);
   triangle.vy = state.gravityValue;
   triangle.type = 'triangle';
   triangle.interactive = true;
@@ -76,7 +77,7 @@ function createRectangle() {
     rectangle.width, state.width - rectangle.width
   );
   rectangle.y = -rectangle.height;
-  rectangle.square = rectangle.width * rectangle.height;
+  rectangle.area = rectangle.width * rectangle.height;
   rectangle.vy = state.gravityValue;
   rectangle.type = 'rectangle';
   rectangle.interactive = true;
@@ -97,7 +98,7 @@ function createPentagon() {
     pentagon.width, state.width - pentagon.width
   );
   pentagon.y = -pentagon.height;
-  pentagon.square = pentagon.height * pentagon.width / 2;
+  pentagon.area = pentagon.height * pentagon.width / 2;
   pentagon.vy = state.gravityValue;
   pentagon.type = 'pentagon';
   pentagon.interactive = true;
@@ -118,7 +119,7 @@ function createHexagon() {
     hexagon.width, state.width - hexagon.width
   );
   hexagon.y = -hexagon.height;
-  hexagon.square = 2140;
+  hexagon.area = 2140;
   hexagon.vy = state.gravityValue;
   hexagon.type = 'pentagon';
   hexagon.interactive = true;
@@ -139,7 +140,7 @@ function createCircle() {
     circle.width / 2, state.width - circle.width / 2
   );
   circle.y = -circle.height / 2;
-  circle.square = Math.round(Math.PI * Math.pow(circle.width, 2) / 4);
+  circle.area = Math.round(Math.PI * Math.pow(circle.width, 2) / 4);
   circle.vy = state.gravityValue;
   circle.type = 'circle';
   circle.interactive = true;
@@ -160,7 +161,7 @@ function createEllipse() {
     ellipse.width / 2, state.width - ellipse.width / 2
   );
   ellipse.y = -ellipse.height / 2;
-  ellipse.square = Math.round(Math.PI * ellipse.width * ellipse.height / 4);
+  ellipse.area = Math.round(Math.PI * ellipse.width * ellipse.height / 4);
   ellipse.vy = state.gravityValue;
   ellipse.type = 'ellipse';
   ellipse.interactive = true;
@@ -168,6 +169,26 @@ function createEllipse() {
   shapes.push(ellipse);
   app.stage.addChild(ellipse);
 }
+
+function createShape() {
+  const shape = new Graphics();
+  const color = getRandomColor();
+  shape.beginFill(color);
+  shape.drawChamferRect(0, 0, 80, 60, -20)
+  shape.endFill();
+
+  shape.x = randomInt(
+    shape.width, state.width - shape.width
+  );
+  shape.y = -shape.height;
+  shape.area = Math.round(shape.width * shape.height - (Math.PI * Math.pow(20, 2)));
+  shape.vy = state.gravityValue;
+  shape.type = 'rectangle';
+  shape.interactive = true;
+  shape.buttonMode = true;
+  app.stage.addChild(shape);
+  shapes.push(shape);
+};
 
 function createShapes() {
   const type = shapesTypes[randomInt(0, shapesTypes.length - 1)];
@@ -191,8 +212,11 @@ function createShapes() {
     case 'ellipse':
       createEllipse();
       break;
+    case 'shape':
+      createShape();
+      break;
     default:
-      createEllipse();
+      createRectangle();
   }
 }
 
@@ -211,13 +235,13 @@ function getVisibleShapes() {
   return [...visibleNotRectangleShapes, ...visibleRectangleShapes];
 }
 
-function calculateSquareOfShapes() {
+function calculateAreaOfShapes() {
   const visibleShapes = getVisibleShapes();
 
-  const totalSquare = visibleShapes
-    .reduce((square, shape) => (square + shape.square), 0);
+  const totalArea = visibleShapes
+    .reduce((area, shape) => (area + shape.area), 0);
 
-  return totalSquare;
+  return totalArea;
 }
 
 function setup() {
@@ -235,7 +259,7 @@ app.ticker.add(() => {
     shape.y += shape.vy;
   }
   number.innerText = getVisibleShapes().length;
-  area.innerText = calculateSquareOfShapes();
+  area.innerText = calculateAreaOfShapes();
 });
 
 // events
