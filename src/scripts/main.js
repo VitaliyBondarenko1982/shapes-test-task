@@ -89,16 +89,17 @@ function createRectangle() {
 function createPentagon() {
   const pentagon = new Graphics();
   const color = getRandomColor();
-
+  const radius = 30;
+  const numberOfSides = 5;
   pentagon.beginFill(color);
-  pentagon.drawPolygon(0, 0, 38, 0, 50, 37, 18, 59, -13, 36);
+  pentagon.drawRegularPolygon(0, 0, radius, numberOfSides);
   pentagon.endFill();
 
   pentagon.x = randomInt(
     pentagon.width, state.width - pentagon.width
   );
   pentagon.y = -pentagon.height;
-  pentagon.area = pentagon.height * pentagon.width / 2;
+  pentagon.area = Math.round((Math.pow(radius, 2) * numberOfSides  * Math.sin(360 / numberOfSides * Math.PI / 180)) / 2);
   pentagon.vy = state.gravityValue;
   pentagon.type = 'pentagon';
   pentagon.interactive = true;
@@ -110,16 +111,18 @@ function createPentagon() {
 function createHexagon() {
   const hexagon = new Graphics();
   const color = getRandomColor();
+  const radius = 30;
+  const numberOfSides = 6;
 
   hexagon.beginFill(color);
-  hexagon.drawPolygon(0, 0, 29, 0, 43, 25, 29, 50, 0, 50, -14, 25);
+  hexagon.drawRegularPolygon(0, 0, radius, numberOfSides);
   hexagon.endFill();
 
   hexagon.x = randomInt(
     hexagon.width, state.width - hexagon.width
   );
   hexagon.y = -hexagon.height;
-  hexagon.area = 2140;
+  hexagon.area = Math.round((Math.pow(radius, 2) * numberOfSides  * Math.sin(360 / numberOfSides * Math.PI / 180)) / 2);
   hexagon.vy = state.gravityValue;
   hexagon.type = 'pentagon';
   hexagon.interactive = true;
@@ -173,15 +176,16 @@ function createEllipse() {
 function createShape() {
   const shape = new Graphics();
   const color = getRandomColor();
+  const chamfer = 20;
   shape.beginFill(color);
-  shape.drawChamferRect(0, 0, 80, 60, -20)
+  shape.drawChamferRect(0, 0, 80, 60, -chamfer)
   shape.endFill();
 
   shape.x = randomInt(
     shape.width, state.width - shape.width
   );
   shape.y = -shape.height;
-  shape.area = Math.round(shape.width * shape.height - (Math.PI * Math.pow(20, 2)));
+  shape.area = Math.round(shape.width * shape.height - (Math.PI * Math.pow(chamfer, 2)));
   shape.vy = state.gravityValue;
   shape.type = 'rectangle';
   shape.interactive = true;
