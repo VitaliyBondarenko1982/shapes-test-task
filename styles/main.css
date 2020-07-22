@@ -69,9 +69,6 @@ body {
     transition: opacity 0.3s ease; }
     .app__button:hover {
       opacity: 0.8; }
-    .app__button:active:before, .app__button:active:after {
-      -webkit-transform: translate(-50%, -50%) scale(0.95);
-              transform: translate(-50%, -50%) scale(0.95); }
     .app__button:focus {
       outline: none; }
     .app__button:before, .app__button:after {
@@ -86,6 +83,9 @@ body {
       transition: -webkit-transform 0.3s ease;
       transition: transform 0.3s ease;
       transition: transform 0.3s ease, -webkit-transform 0.3s ease; }
+    .app__button:active:before, .app__button:active:after {
+      -webkit-transform: translate(-50%, -50%) scale(0.95);
+              transform: translate(-50%, -50%) scale(0.95); }
     .app__button-decrease {
       border-right-width: 1px;
       border-radius: 5px 0 0 5px; }
