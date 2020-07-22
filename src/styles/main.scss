@@ -78,6 +78,14 @@ body {
       left: 50%;
       transform: translate(-50%, -50%);
       background-color: darkblue;
+      transition: transform 0.3s ease;
+    }
+
+    &:active {
+      &:before,
+      &:after {
+        transform: translate(-50%, -50%) scale(0.95);
+      }
     }
 
     &-decrease {
