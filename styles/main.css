@@ -1,0 +1,104 @@
+body {
+  margin: 0; }
+
+.app {
+  font-family: Calibri, sans-serif;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 100vh;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 90%;
+  margin: auto; }
+  .app__top {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
+  .app__number {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid lightgrey;
+    border-bottom: none; }
+  .app__area {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid lightgrey;
+    border-bottom: none;
+    border-left: none; }
+  .app__bottom {
+    margin-top: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .app__speed {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-right: 15px;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .app__gravity {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .app__bottom-text {
+    padding: 10px;
+    border: 1px solid lightgrey; }
+  .app__button {
+    cursor: pointer;
+    position: relative;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #222;
+    background-color: inherit;
+    -webkit-transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease; }
+    .app__button:hover {
+      opacity: 0.8; }
+    .app__button:focus {
+      outline: none; }
+    .app__button:before, .app__button:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+              transform: translate(-50%, -50%);
+      background-color: darkblue; }
+    .app__button-decrease {
+      border-right-width: 1px;
+      border-radius: 5px 0 0 5px; }
+      .app__button-decrease:before {
+        width: 18px;
+        height: 2px; }
+    .app__button-increase {
+      border-radius: 0 5px 5px 0;
+      margin-right: 20px;
+      border-left-width: 1px; }
+      .app__button-increase:before {
+        width: 18px;
+        height: 2px; }
+      .app__button-increase:after {
+        width: 2px;
+        height: 18px; }
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid lightgrey; }
+
+/*# sourceMappingURL=main.css.map */
